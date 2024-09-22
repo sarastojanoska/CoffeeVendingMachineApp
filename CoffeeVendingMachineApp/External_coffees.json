@@ -1,0 +1,53 @@
+[
+  {
+    "Name": "Mocha",
+    "Price": 3.50,
+    "Description": "Chocolate flavored coffee with milk and sugar",
+    "Characteristics": [
+      {
+        "Name": "Milk",
+        "Price": 0.30,
+        "Quantity": 1
+      },
+      {
+        "Name": "Sugar",
+        "Price": 0.20,
+        "Quantity": 1
+      },
+      {
+        "Name": "Chocolate",
+        "Price": 0.50,
+        "Quantity": 1
+      }
+    ]
+  },
+  {
+    "Name": "Flat White",
+    "Price": 3.00,
+    "Description": "Smooth coffee with milk",
+    "Characteristics": [
+      {
+        "Name": "Milk",
+        "Price": 0.30,
+        "Quantity": 2
+      }
+    ]
+  },
+  {
+    "Name": "Irish Coffee",
+    "Price": 4.00,
+    "Description": "Coffee with whiskey and cream",
+    "Characteristics": [
+      {
+        "Name": "Whiskey",
+        "Price": 1.00,
+        "Quantity": 1
+      },
+      {
+        "Name": "Cream",
+        "Price": 0.50,
+        "Quantity": 1
+      }
+    ]
+  }
+]
