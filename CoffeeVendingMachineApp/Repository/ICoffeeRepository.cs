@@ -11,5 +11,11 @@ namespace CoffeeVendingMachineApp.Repository
     {
         List<Coffee> GetPredefinedCoffees();
         List<CoffeeCreamer> GetCoffeeCreamers();
+        List<Coffee> GetExternalCoffees();
+        Coffee GetPredefinedCoffeeByName(string coffeeName);
+        Coffee GetExternalCoffeeByName(string coffeeName);
+        CoffeeCreamer GetCreamerByName(Coffee coffee, string creamerName);
+        void UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity);
+        void UpdateCreamerQuantity(CoffeeCreamer creamer, double newQuantity);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CoffeeVendingMachineApp.Entities;
+using CoffeeVendingMachineApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,10 @@ namespace CoffeeVendingMachineApp.Repository
     {
         private List<Coffee> _predefinedCoffees;
         private List<CoffeeCreamer> _creamerOptions;
-
-        public CoffeeRepository()
+        private readonly IExternalCoffeeService _externalCoffeeService;
+        public CoffeeRepository(IExternalCoffeeService externalCoffeeService)
         {
+            _externalCoffeeService = externalCoffeeService;
             _predefinedCoffees = new List<Coffee>
             {
                 new Coffee
@@ -159,6 +161,46 @@ namespace CoffeeVendingMachineApp.Repository
         public List<CoffeeCreamer> GetCoffeeCreamers()
         {
             return _creamerOptions;
+        }
+
+        public List<Coffee> GetExternalCoffees()
+        {
+           return _externalCoffeeService.GetExternalCoffees();
+        }
+
+        public Coffee GetPredefinedCoffeeByName(string coffeeName)
+        {
+            return _predefinedCoffees.FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
+        }
+
+        public Coffee GetExternalCoffeeByName(string coffeeName)
+        {
+            var list = GetExternalCoffees();
+            return list.FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
+        }
+
+        public CoffeeCreamer GetCreamerByName(Coffee coffee,string creamerName)
+        {
+            var creamer = coffee.Characteristics
+                    .FirstOrDefault(c => c.Name.Equals(creamerName, StringComparison.OrdinalIgnoreCase));
+            return creamer;
+        }
+
+        public void UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity)
+        {
+            if (newQuantity < creamer.Quantity)
+            {
+                coffee.Price -= creamer.Price * (creamer.Quantity - newQuantity);
+            }
+            else
+            {
+                coffee.Price += creamer.Price * (newQuantity - creamer.Quantity);
+            }
+        }
+
+        public void UpdateCreamerQuantity(CoffeeCreamer creamer, double newQuantity)
+        {
+           creamer.Quantity = newQuantity;
         }
     }
 }

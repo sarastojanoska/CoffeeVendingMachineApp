@@ -10,13 +10,10 @@ namespace CoffeeVendingMachineApp.Services
 {
     public class CoffeeService : ICoffeeService
     {
-        private readonly IExternalCoffeeService _externalCoffeeService;
         private readonly ICoffeeRepository _coffeeRepository;
 
-        public CoffeeService(IExternalCoffeeService externalCoffeeService,
-            ICoffeeRepository coffeeRepository)
+        public CoffeeService(ICoffeeRepository coffeeRepository)
         {
-            _externalCoffeeService = externalCoffeeService;
             _coffeeRepository = coffeeRepository;
         }
 
@@ -30,7 +27,7 @@ namespace CoffeeVendingMachineApp.Services
                 Console.WriteLine("Characteristics:" + $"{coffee.Description}");
             }
 
-            var externalCoffees = _externalCoffeeService.GetExternalCoffees();
+            var externalCoffees = _coffeeRepository.GetExternalCoffees();
             if (externalCoffees.Count > 0)
             {
                 Console.WriteLine("External Coffee Menu:");
@@ -47,11 +44,10 @@ namespace CoffeeVendingMachineApp.Services
             Console.WriteLine("Enter the name of the coffee you want to customize:");
             var coffeeName = Console.ReadLine();
 
-            var coffee = _coffeeRepository.GetPredefinedCoffees().FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
+            var coffee = _coffeeRepository.GetPredefinedCoffeeByName(coffeeName);
             if (coffee == null)
             {
-                var externalCoffees = _externalCoffeeService.GetExternalCoffees();
-                coffee = externalCoffees.FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
+                coffee = _coffeeRepository.GetExternalCoffeeByName(coffeeName);
                 if (coffee == null)
                 {
                     Console.WriteLine("Invalid coffee name please enter valid name from the provided menu");
@@ -73,7 +69,6 @@ namespace CoffeeVendingMachineApp.Services
             Console.WriteLine($"{coffee.Name} - ${coffee.Price}");
             DisplayCoffeeCharacteristics(coffee);
         }
-
         private bool AskUserYesNo(string question)
         {
             Console.WriteLine($"{question} Answer y/n");
@@ -87,8 +82,7 @@ namespace CoffeeVendingMachineApp.Services
             {
                 Console.WriteLine("Enter the name of the creamer you want to customize:");
                 var creamerName = Console.ReadLine();
-                var creamer = coffee.Characteristics
-                    .FirstOrDefault(c => c.Name.Equals(creamerName, StringComparison.OrdinalIgnoreCase));
+                var creamer = _coffeeRepository.GetCreamerByName(coffee, creamerName);
                 if (creamer == null)
                 {
                     Console.WriteLine("Invalid creamer name. Please enter a valid name from the provided menu.");
@@ -102,8 +96,8 @@ namespace CoffeeVendingMachineApp.Services
                     continue;
                 }
 
-                UpdateCoffeePrice(coffee, creamer, quantity);
-                creamer.Quantity = quantity;
+                _coffeeRepository.UpdateCoffeePrice(coffee, creamer, quantity);
+                _coffeeRepository.UpdateCreamerQuantity(creamer, quantity);
 
                 if (!AskUserYesNo("Would you like to customize more creamers?"))
                 {
@@ -111,17 +105,7 @@ namespace CoffeeVendingMachineApp.Services
                 }
             }
         }
-        private void UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity)
-        {
-            if (newQuantity < creamer.Quantity)
-            {
-                coffee.Price -= creamer.Price * (creamer.Quantity - newQuantity);
-            }
-            else
-            {
-                coffee.Price += creamer.Price * (newQuantity - creamer.Quantity);
-            }
-        }
+        
         private void DisplayCoffeeCharacteristics(Coffee coffee)
         {
             foreach (var creamer in coffee.Characteristics)
