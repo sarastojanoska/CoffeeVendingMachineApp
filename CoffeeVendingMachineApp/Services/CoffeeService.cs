@@ -41,7 +41,7 @@ namespace CoffeeVendingMachineApp.Services
 
         public void CustomizeCoffee()
         {
-            Console.WriteLine("Enter the name of the coffee you want to customize:");
+            Console.WriteLine("Enter the name of the coffee you want to order:");
             var coffeeName = Console.ReadLine();
 
             var coffee = _coffeeRepository.GetPredefinedCoffeeByName(coffeeName);
@@ -65,15 +65,28 @@ namespace CoffeeVendingMachineApp.Services
                 CustomizeCreamers(coffee);
             }
             
-            Console.WriteLine("Your customized coffee is:");
+            Console.WriteLine("Your ordered coffee is:");
             Console.WriteLine($"{coffee.Name} - ${coffee.Price}");
             DisplayCoffeeCharacteristics(coffee);
         }
         private bool AskUserYesNo(string question)
         {
             Console.WriteLine($"{question} Answer y/n");
-            var response = Console.ReadLine();
-            return response?.ToLower() == "y";
+            var response = Console.ReadLine()?.Trim().ToLower();
+
+            if (response == "y")
+            {
+                return true;
+            }
+            else if (response == "n")
+            {
+                return false;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+                return AskUserYesNo(question);
+            }
         }
 
         private void CustomizeCreamers(Coffee coffee)
@@ -110,7 +123,7 @@ namespace CoffeeVendingMachineApp.Services
         {
             foreach (var creamer in coffee.Characteristics)
             {
-                Console.WriteLine($"{creamer.Name} - {creamer.Quantity}");
+                Console.WriteLine("Characteristics" + $"{creamer.Name} - {creamer.Quantity}");
             }
         }
     }
