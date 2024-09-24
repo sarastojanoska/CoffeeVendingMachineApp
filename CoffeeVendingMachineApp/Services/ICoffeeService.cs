@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoffeeVendingMachineApp.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace CoffeeVendingMachineApp.Services
     public interface ICoffeeService
     {
         void DisplayCoffeeMenu();
+        void CustomizeCoffee();
     }
 }

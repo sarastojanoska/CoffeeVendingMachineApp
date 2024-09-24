@@ -1,4 +1,5 @@
-﻿using CoffeeVendingMachineApp.Services;
+﻿using CoffeeVendingMachineApp.Repository;
+using CoffeeVendingMachineApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace CoffeeVendingMachineApp
         {
             services.AddScoped<ICoffeeService, CoffeeService>();
             services.AddScoped<IExternalCoffeeService, ExternalCoffeeService>();
+            services.AddScoped<ICoffeeRepository, CoffeeRepository>();
         }
     }
 }

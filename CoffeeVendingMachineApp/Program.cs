@@ -15,6 +15,7 @@ namespace CoffeeVendingMachineApp
             // Resolve the VendingMachine service
             var vendingMachine = serviceProvider.GetService<ICoffeeService>();
             vendingMachine.DisplayCoffeeMenu();
+            vendingMachine.CustomizeCoffee();
         }
     }
 }
