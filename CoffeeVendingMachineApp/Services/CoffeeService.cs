@@ -11,9 +11,11 @@ namespace CoffeeVendingMachineApp.Services
     public class CoffeeService : ICoffeeService
     {
         private readonly ICoffeeRepository _coffeeRepository;
-
-        public CoffeeService(ICoffeeRepository coffeeRepository)
+        private readonly IExternalCoffeeService _externalCoffeeService;
+        public CoffeeService(ICoffeeRepository coffeeRepository
+            ,IExternalCoffeeService externalCoffeeService)
         {
+            _externalCoffeeService = externalCoffeeService;
             _coffeeRepository = coffeeRepository;
         }
 
@@ -27,7 +29,7 @@ namespace CoffeeVendingMachineApp.Services
                 Console.WriteLine("Characteristics:" + $"{coffee.Description}");
             }
 
-            var externalCoffees = _coffeeRepository.GetExternalCoffees();
+            var externalCoffees = _externalCoffeeService.GetExternalCoffees();
             if (externalCoffees.Count > 0)
             {
                 Console.WriteLine("External Coffee Menu:");
@@ -47,7 +49,8 @@ namespace CoffeeVendingMachineApp.Services
             var coffee = _coffeeRepository.GetPredefinedCoffeeByName(coffeeName);
             if (coffee == null)
             {
-                coffee = _coffeeRepository.GetExternalCoffeeByName(coffeeName);
+                var list = _externalCoffeeService.GetExternalCoffees();
+                coffee = list.FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
                 if (coffee == null)
                 {
                     Console.WriteLine("Invalid coffee name please enter valid name from the provided menu");
@@ -109,8 +112,8 @@ namespace CoffeeVendingMachineApp.Services
                     continue;
                 }
 
-                _coffeeRepository.UpdateCoffeePrice(coffee, creamer, quantity);
-                _coffeeRepository.UpdateCreamerQuantity(creamer, quantity);
+                UpdateCoffeePrice(coffee, creamer, quantity);
+                creamer.Quantity = quantity;
 
                 if (!AskUserYesNo("Would you like to customize more creamers?"))
                 {
@@ -118,7 +121,18 @@ namespace CoffeeVendingMachineApp.Services
                 }
             }
         }
-        
+        private void UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity)
+        {
+            if (newQuantity < creamer.Quantity)
+            {
+                coffee.Price -= creamer.Price * (creamer.Quantity - newQuantity);
+            }
+            else
+            {
+                coffee.Price += creamer.Price * (newQuantity - creamer.Quantity);
+            }
+        }
+
         private void DisplayCoffeeCharacteristics(Coffee coffee)
         {
             foreach (var creamer in coffee.Characteristics)
