@@ -11,7 +11,7 @@ namespace CoffeeVendingMachineApp.Services
     public class ExternalCoffeeService : IExternalCoffeeService
     {
         private const string ExternalCoffeesFilePath = "C:\\Users\\SARA\\source\\repos\\CoffeeVendingMachineApp\\CoffeeVendingMachineApp\\External_coffees.json";
-        public List<Coffee> GetExternalCoffees()
+        public async Task<List<Coffee>> GetExternalCoffees()
         {
             var externalCoffees = new List<Coffee>();
             if (!File.Exists(ExternalCoffeesFilePath))

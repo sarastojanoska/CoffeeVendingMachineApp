@@ -19,17 +19,20 @@ namespace CoffeeVendingMachineApp.Services
             _coffeeRepository = coffeeRepository;
         }
 
-        public void DisplayCoffeeMenu()
+        public async Task DisplayCoffeeMenu()
         {
-            var predefinedCoffees = _coffeeRepository.GetPredefinedCoffees();
-            Console.WriteLine("Coffee Menu:");
-            foreach (var coffee in predefinedCoffees)
+            var predefinedCoffees = await _coffeeRepository.GetPredefinedCoffees();
+            if (predefinedCoffees.Count > 0)
             {
-                Console.WriteLine($"{coffee.Name} - ${coffee.Price}");
-                Console.WriteLine("Characteristics:" + $"{coffee.Description}");
+                Console.WriteLine("Coffee Menu:");
+                foreach (var coffee in predefinedCoffees)
+                {
+                    Console.WriteLine($"{coffee.Name} - ${coffee.Price}");
+                    Console.WriteLine("Characteristics:" + $"{coffee.Description}");
+                }
             }
-
-            var externalCoffees = _externalCoffeeService.GetExternalCoffees();
+            
+            var externalCoffees = await _externalCoffeeService.GetExternalCoffees();
             if (externalCoffees.Count > 0)
             {
                 Console.WriteLine("External Coffee Menu:");
@@ -41,15 +44,15 @@ namespace CoffeeVendingMachineApp.Services
             }
         }
 
-        public void CustomizeCoffee()
+        public async Task CustomizeCoffee()
         {
             Console.WriteLine("Enter the name of the coffee you want to order:");
             var coffeeName = Console.ReadLine();
 
-            var coffee = _coffeeRepository.GetPredefinedCoffeeByName(coffeeName);
+            var coffee = await _coffeeRepository.GetPredefinedCoffeeByName(coffeeName);
             if (coffee == null)
             {
-                var list = _externalCoffeeService.GetExternalCoffees();
+                var list = await _externalCoffeeService.GetExternalCoffees();
                 coffee = list.FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
                 if (coffee == null)
                 {
@@ -65,12 +68,12 @@ namespace CoffeeVendingMachineApp.Services
 
             if (AskUserYesNo("Would you like to customize the creamers?"))
             {
-                CustomizeCreamers(coffee);
+                await CustomizeCreamers(coffee);
             }
             
             Console.WriteLine("Your ordered coffee is:");
             Console.WriteLine($"{coffee.Name} - ${coffee.Price}");
-            DisplayCoffeeCharacteristics(coffee);
+            await DisplayCoffeeCharacteristics(coffee);
         }
         private bool AskUserYesNo(string question)
         {
@@ -92,13 +95,13 @@ namespace CoffeeVendingMachineApp.Services
             }
         }
 
-        private void CustomizeCreamers(Coffee coffee)
+        private async Task CustomizeCreamers(Coffee coffee)
         {
             while (true)
             {
                 Console.WriteLine("Enter the name of the creamer you want to customize:");
                 var creamerName = Console.ReadLine();
-                var creamer = _coffeeRepository.GetCreamerByName(coffee, creamerName);
+                var creamer = await _coffeeRepository.GetCreamerByName(coffee, creamerName);
                 if (creamer == null)
                 {
                     Console.WriteLine("Invalid creamer name. Please enter a valid name from the provided menu.");
@@ -112,7 +115,7 @@ namespace CoffeeVendingMachineApp.Services
                     continue;
                 }
 
-                UpdateCoffeePrice(coffee, creamer, quantity);
+                await UpdateCoffeePrice(coffee, creamer, quantity);
                 creamer.Quantity = quantity;
 
                 if (!AskUserYesNo("Would you like to customize more creamers?"))
@@ -121,7 +124,7 @@ namespace CoffeeVendingMachineApp.Services
                 }
             }
         }
-        private void UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity)
+        private async Task UpdateCoffeePrice(Coffee coffee, CoffeeCreamer creamer, double newQuantity)
         {
             if (newQuantity < creamer.Quantity)
             {
@@ -133,7 +136,7 @@ namespace CoffeeVendingMachineApp.Services
             }
         }
 
-        private void DisplayCoffeeCharacteristics(Coffee coffee)
+        private async Task DisplayCoffeeCharacteristics(Coffee coffee)
         {
             foreach (var creamer in coffee.Characteristics)
             {

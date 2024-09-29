@@ -9,6 +9,6 @@ namespace CoffeeVendingMachineApp.Services
 {
     public interface IExternalCoffeeService
     {
-        List<Coffee> GetExternalCoffees();
+        Task<List<Coffee>> GetExternalCoffees();
     }
 }

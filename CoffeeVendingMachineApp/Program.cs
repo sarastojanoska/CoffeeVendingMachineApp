@@ -12,7 +12,7 @@ namespace CoffeeVendingMachineApp
     public class Program
     {
         public static IConfiguration Configuration { get; private set; }
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -36,8 +36,8 @@ namespace CoffeeVendingMachineApp
                 SeedPredefinedCoffees.Seed(context);
             }
             var vendingMachine = serviceProvider.GetService<ICoffeeService>();
-            vendingMachine.DisplayCoffeeMenu();
-            vendingMachine.CustomizeCoffee();
+            await vendingMachine.DisplayCoffeeMenu();
+            await vendingMachine.CustomizeCoffee();
         }
     }
 }

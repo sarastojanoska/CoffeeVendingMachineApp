@@ -19,19 +19,20 @@ namespace CoffeeVendingMachineApp.Repository
             _context = context;
         }
 
-        public List<Coffee> GetPredefinedCoffees()
+        public async Task<List<Coffee>> GetPredefinedCoffees()
         {
             return _context.Coffees.Include(c => c.Characteristics).ToList();
         }
 
-        public Coffee GetPredefinedCoffeeByName(string coffeeName)
+        public async Task<Coffee> GetPredefinedCoffeeByName(string coffeeName)
         {
-            return _context.Coffees.Include(c => c.Characteristics)
+            var coffee = _context.Coffees.Include(c => c.Characteristics)
                                   .FirstOrDefault(c => c.Name.ToLower() == coffeeName.ToLower());
+            return coffee;
 
         }
 
-        public CoffeeCreamer GetCreamerByName(Coffee coffee,string creamerName)
+        public async Task<CoffeeCreamer> GetCreamerByName(Coffee coffee,string creamerName)
         {
             var creamer = coffee.Characteristics
                     .FirstOrDefault(c => c.Name.Equals(creamerName, StringComparison.OrdinalIgnoreCase));

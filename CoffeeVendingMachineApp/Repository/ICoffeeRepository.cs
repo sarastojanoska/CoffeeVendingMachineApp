@@ -9,9 +9,9 @@ namespace CoffeeVendingMachineApp.Repository
 {
     public interface ICoffeeRepository
     {
-        List<Coffee> GetPredefinedCoffees();
-        Coffee GetPredefinedCoffeeByName(string coffeeName);
-        CoffeeCreamer GetCreamerByName(Coffee coffee, string creamerName);
+        Task<List<Coffee>> GetPredefinedCoffees();
+        Task<Coffee> GetPredefinedCoffeeByName(string coffeeName);
+        Task<CoffeeCreamer> GetCreamerByName(Coffee coffee, string creamerName);
 
     }
 }

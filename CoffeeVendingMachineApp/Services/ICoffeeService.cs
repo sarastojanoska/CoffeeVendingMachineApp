@@ -9,7 +9,7 @@ namespace CoffeeVendingMachineApp.Services
 {
     public interface ICoffeeService
     {
-        void DisplayCoffeeMenu();
-        void CustomizeCoffee();
+        Task DisplayCoffeeMenu();
+        Task CustomizeCoffee();
     }
 }
